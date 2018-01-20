@@ -1,0 +1,58 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://maven.google.com' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    //Android
+    androidBuildToolsVersion = "27.0.2"
+    androidMinSdkVersion = 19
+    androidTargetSdkVersion = 27
+    androidCompileSdkVersion = 27
+
+    VERSION_CODE = 1
+    VERSION_NAME = "0.0.1"
+
+    //Libraries
+    supportLibVersion = '25.2.0'
+
+    butterKnifeVersion = '8.8.1'
+
+    moxyVersion = '1.5.3'
+
+    daggerVersion = '2.11'
+
+    rxJavaVersion = '2.1.1'
+    rxAndroidVersion = '2.0.1'
+
+    // data libraries
+    retrofitVersion = '2.3.0'
+    okhttpVersion = '3.9.0'
+    gsonVersion = '2.8.1'
+
+    // logger
+    timberVersion = '4.5.1'
+
+    // permissions
+    dexterVersion = '4.1.1'
+}
