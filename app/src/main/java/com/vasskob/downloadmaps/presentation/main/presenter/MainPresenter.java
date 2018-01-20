@@ -21,8 +21,12 @@ public class MainPresenter extends MvpPresenter<MainView> {
         getViewState().showFreeMemory(freeMemory, totalMemory);
     }
 
+    public void getContinents() {
+        // TODO: 20.01.18 implement parsing XML
+        getViewState().showRegions(null);
+    }
+
     public void loadFile(String url) {
         mRepository.downloadFile(url);
     }
-
 }

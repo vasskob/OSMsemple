@@ -15,9 +15,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.vasskob.downloadmaps.R;
 import com.vasskob.downloadmaps.domain.model.Region;
 import com.vasskob.downloadmaps.presentation.main.presenter.MainPresenter;
-import com.vasskob.downloadmaps.presentation.main.view.adapter.ContinentAdapter;
+import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
 import com.vasskob.downloadmaps.utils.MemoryUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
+import timber.log.Timber;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
@@ -43,11 +45,20 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @InjectPresenter(type = PresenterType.LOCAL)
     MainPresenter mPresenter;
+    private RegionAdapter mAdapter;
 
     @ProvidePresenter(type = PresenterType.LOCAL)
     MainPresenter providePresenter() {
         return mPresenterProvider.get();
     }
+
+    private RegionAdapter.OnRegionClickListener mListener = new RegionAdapter.OnRegionClickListener() {
+        @Override
+        public void onRegionClick(int position) {
+            // TODO: 20.01.18 implement routing
+            Timber.d("onRegionClick: " + position);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +68,14 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         ButterKnife.bind(this);
         initContinentRView();
         mPresenter.getFreeMemory();
+        mPresenter.getContinents();
     }
 
     private void initContinentRView() {
         rvRegions.setLayoutManager(new LinearLayoutManager(this));
         rvRegions.setItemAnimator(new DefaultItemAnimator());
-        rvRegions.setAdapter(new ContinentAdapter());
+        mAdapter = new RegionAdapter(mListener);
+        rvRegions.setAdapter(mAdapter);
     }
 
     @Override
@@ -77,6 +90,18 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void showRegions(List<Region> regionList) {
+        // TODO: 20.01.18 update with real data
+        mAdapter.updateRegions(getFakeRegions());
+    }
 
+    private List<Region> getFakeRegions() {
+        List<Region> regions = new ArrayList<>();
+        Region region = new Region("Africa");
+        Region region1 = new Region("America");
+        Region region2 = new Region("Antarctica");
+        regions.add(region);
+        regions.add(region1);
+        regions.add(region2);
+        return regions;
     }
 }
