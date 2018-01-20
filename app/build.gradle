@@ -13,7 +13,7 @@ android {
         versionName VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "BASE_URL", '"http://download.osmand.net/download.php?standard=yes&file="'
+        buildConfigField "String", "BASE_URL", '"http://download.osmand.net/"'
     }
     buildTypes {
         release {
