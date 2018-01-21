@@ -30,9 +30,17 @@ public class Region implements Comparable<Region>, Parcelable {
     private List<Region> regions = new ArrayList<>(); // Child regions collection
 
     // download info
-    public volatile DownloadState downloadState = DownloadState.NOT_STARTED;
+    private volatile DownloadState downloadState = DownloadState.NOT_STARTED;
     public int downloadProgress;
     public int fileSize;
+
+    public DownloadState getDownloadState() {
+        return downloadState;
+    }
+
+    public void setDownloadState(DownloadState downloadState) {
+        this.downloadState = downloadState;
+    }
 
     public Region() {
     }

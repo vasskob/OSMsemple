@@ -54,8 +54,25 @@ class RegionViewHolder extends RecyclerView.ViewHolder {
         mListener.onRegionClick(getAdapterPosition());
     }
 
+    private boolean isClicked;
+
     @OnClick(R.id.iv_download)
     void onDownloadClick() {
         mListener.onDownloadClick(getAdapterPosition());
+        if (isClicked) {
+            initLoadingBar(true);
+            isClicked = false;
+        } else {
+            initLoadingBar(false);
+            isClicked = false;
+        }
+    }
+
+    private void initLoadingBar(boolean isVisible) {
+        if (isVisible) pbLoading.setVisibility(View.VISIBLE);
+        else pbLoading.setVisibility(View.INVISIBLE);
+        pbLoading.setMax(100);
+        pbLoading.setProgress(45);
+        ivDownload.setSelected(isVisible);
     }
 }

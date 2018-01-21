@@ -85,7 +85,9 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
         public void onDownloadClick(int position) {
             Timber.d("onDownloadClick: URL = "
                     + StringUtils.getDownloadURL(mRegionList.get(position)));
-           }
+            rlProgressContainer.setVisibility(View.VISIBLE);
+            pbFreeMemory.setVisibility(View.VISIBLE);
+        }
     };
 
     public static Fragment newInstance(List<Region> regions) {
