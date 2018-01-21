@@ -55,6 +55,7 @@ public class ContinentPresenter extends MvpPresenter<ContinentView> {
 
     @Override
     public void onDestroy() {
+        Timber.d("onDestroy: ");
         if (!mCompositeDisposable.isDisposed()) {
             mCompositeDisposable.clear();
         }

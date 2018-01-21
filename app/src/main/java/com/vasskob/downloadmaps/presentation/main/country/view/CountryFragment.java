@@ -25,6 +25,7 @@ import com.vasskob.downloadmaps.domain.model.Region;
 import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.country.presenter.CountryPresenter;
 import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
+import com.vasskob.downloadmaps.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,12 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
             Timber.d("onRegionClick: " + mRegionList.get(position));
             mCallback.onRegionClick(mRegionList.get(position));
         }
+
+        @Override
+        public void onDownloadClick(int position) {
+            Timber.d("onDownloadClick: URL = "
+                    + StringUtils.getDownloadURL(mRegionList.get(position)));
+           }
     };
 
     public static Fragment newInstance(List<Region> regions) {
@@ -150,7 +157,6 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
     @Override
     public void showRegions(List<Region> regionList) {
         pbFreeMemory.setVisibility(View.GONE);
-        mRegionList = regionList;
         mAdapter.updateRegions(regionList);
     }
 

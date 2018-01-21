@@ -24,7 +24,8 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="@dimen/default_margin"
         android:layout_toEndOf="@+id/iv_globe"
-        android:gravity="center"
+        android:layout_toStartOf="@+id/iv_download"
+        android:gravity="start"
         android:textColor="@color/region_item_title_text_color"
         android:textSize="@dimen/region_item_title_text_size"
         tools:text="Europe"/>

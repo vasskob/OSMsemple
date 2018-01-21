@@ -24,6 +24,7 @@ import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.continent.presenter.ContinentPresenter;
 import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
 import com.vasskob.downloadmaps.utils.MemoryUtils;
+import com.vasskob.downloadmaps.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,6 +72,12 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
         public void onRegionClick(int position) {
             Timber.d("onRegionClick: " + mRegionList.get(position));
             mCallback.onRegionClick(mRegionList.get(position));
+        }
+
+        @Override
+        public void onDownloadClick(int position) {
+            Timber.d("onDownloadClick: URL = "
+                    + StringUtils.getDownloadURL(mRegionList.get(position)));
         }
     };
 
@@ -140,6 +147,7 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
 
     @Override
     public void showRegions(List<Region> regionList) {
+        Timber.d("showRegions: Regions = " + regionList);
         mRegionList = regionList;
         mAdapter.updateRegions(regionList);
     }
