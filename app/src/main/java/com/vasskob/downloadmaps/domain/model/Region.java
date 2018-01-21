@@ -1,11 +1,13 @@
 package com.vasskob.downloadmaps.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Region implements Comparable<Region> {
+public class Region implements Comparable<Region>, Parcelable {
 
     private String name;
     private String type;
@@ -24,7 +26,7 @@ public class Region implements Comparable<Region> {
 
     // tree info
     private Region parent;
-    private List<Region> regions=new ArrayList<>(); // Child regions collection
+    private List<Region> regions = new ArrayList<>(); // Child regions collection
 
     // download info
     public volatile DownloadState downloadState = DownloadState.NOT_STARTED;
@@ -151,28 +153,33 @@ public class Region implements Comparable<Region> {
     }
 
     public void validate() {
-        if (type==null) { //1. by default map=yes, srtm=yes, hillshade=yes (in case 'type' not specified)
-            if (map==null) map="yes";
-            if (srtm==null)srtm="yes";
-            if (hillshade==null) hillshade="yes";
-            type="map";
+        if (type == null) { //1. by default map=yes, srtm=yes, hillshade=yes (in case 'type' not specified)
+            if (map == null) map = "yes";
+            if (srtm == null) srtm = "yes";
+            if (hillshade == null) hillshade = "yes";
+            type = "map";
         } else { //in case type specified it takes precedence and sets all flags = no
-            map="no";
-            srtm="no";
-            hillshade="no";
+            map = "no";
+            srtm = "no";
+            hillshade = "no";
             switch (type) {
-                case "srtm": srtm="yes"; break;
-                case "hillshade": hillshade="yes"; break;
-                case "continent": break;
+                case "srtm":
+                    srtm = "yes";
+                    break;
+                case "hillshade":
+                    hillshade = "yes";
+                    break;
+                case "continent":
+                    break;
             }
         }
-        if (wiki==null) wiki=map;
-        if (roads==null) roads=map;
+        if (wiki == null) wiki = map;
+        if (roads == null) roads = map;
     }
 
-    public void addRegion(Region region){
+    public void addRegion(Region region) {
         regions.add(region);
-        region.parent=this;
+        region.parent = this;
     }
 
     public Region getParent() {
@@ -185,9 +192,9 @@ public class Region implements Comparable<Region> {
 
     @Override
     public int compareTo(@NonNull Region region) {
-        try{
+        try {
             return name.compareTo(region.name);
-        } catch (Exception e)  {
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -198,4 +205,79 @@ public class Region implements Comparable<Region> {
         DOWNLOADING,
         COMPLETE
     }
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", map='" + map + '\'' +
+                ", translate='" + translate + '\'' +
+                ", parent=" + parent +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeString(this.type);
+        dest.writeString(this.downloadSuffix);
+        dest.writeString(this.innerDownloadSuffix);
+        dest.writeString(this.downloadPrefix);
+        dest.writeString(this.innerDownloadPrefix);
+        dest.writeString(this.map);
+        dest.writeString(this.srtm);
+        dest.writeString(this.hillshade);
+        dest.writeString(this.wiki);
+        dest.writeString(this.roads);
+        dest.writeString(this.translate);
+        dest.writeString(this.joinMapFiles);
+        dest.writeString(this.boundary);
+        dest.writeParcelable(this.parent, flags);
+        dest.writeList(this.regions);
+        dest.writeInt(this.downloadState == null ? -1 : this.downloadState.ordinal());
+        dest.writeInt(this.downloadProgress);
+        dest.writeInt(this.fileSize);
+    }
+
+    protected Region(Parcel in) {
+        this.name = in.readString();
+        this.type = in.readString();
+        this.downloadSuffix = in.readString();
+        this.innerDownloadSuffix = in.readString();
+        this.downloadPrefix = in.readString();
+        this.innerDownloadPrefix = in.readString();
+        this.map = in.readString();
+        this.srtm = in.readString();
+        this.hillshade = in.readString();
+        this.wiki = in.readString();
+        this.roads = in.readString();
+        this.translate = in.readString();
+        this.joinMapFiles = in.readString();
+        this.boundary = in.readString();
+        this.parent = in.readParcelable(Region.class.getClassLoader());
+        this.regions = new ArrayList<>();
+        in.readList(this.regions, Region.class.getClassLoader());
+        int tmpDownloadState = in.readInt();
+        this.downloadState = tmpDownloadState == -1 ? null : DownloadState.values()[tmpDownloadState];
+        this.downloadProgress = in.readInt();
+        this.fileSize = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Region> CREATOR = new Parcelable.Creator<Region>() {
+        @Override
+        public Region createFromParcel(Parcel source) {
+            return new Region(source);
+        }
+
+        @Override
+        public Region[] newArray(int size) {
+            return new Region[size];
+        }
+    };
 }
