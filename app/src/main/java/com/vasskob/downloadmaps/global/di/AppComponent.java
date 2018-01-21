@@ -4,6 +4,7 @@ import com.vasskob.downloadmaps.DownloadMapsApp;
 import com.vasskob.downloadmaps.data.di.DataComponent;
 import com.vasskob.downloadmaps.data.di.DataScope;
 import com.vasskob.downloadmaps.presentation.di.ActivityBuilder;
+import com.vasskob.downloadmaps.presentation.di.FragmentBuilder;
 
 import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
@@ -17,7 +18,8 @@ import dagger.android.support.AndroidSupportInjectionModule;
                 AppModule.class,
                 AndroidSupportInjectionModule.class,
 
-                ActivityBuilder.class
+                ActivityBuilder.class,
+                FragmentBuilder.class
         })
 
 public interface AppComponent {

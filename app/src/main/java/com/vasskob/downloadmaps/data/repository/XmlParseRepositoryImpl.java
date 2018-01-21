@@ -1,6 +1,8 @@
-package com.vasskob.downloadmaps.utils;
+package com.vasskob.downloadmaps.data.repository;
 
 import com.vasskob.downloadmaps.domain.model.Region;
+import com.vasskob.downloadmaps.domain.repository.XmlParseRepository;
+import com.vasskob.downloadmaps.utils.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -10,9 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 
+import io.reactivex.Single;
 import timber.log.Timber;
 
-public class XmlParser {
+public class XmlParseRepositoryImpl implements XmlParseRepository {
 
     private static final String ATR_NAME = "name";
     private static final String ATR_TYPE = "type";
@@ -31,7 +34,7 @@ public class XmlParser {
     private static final String KEY_REGIONS_LIST = "regions_list";
     private static final String KEY_REGION = "region";
 
-    public Region parse(InputStream is) {
+    public Single<Region> parse(InputStream is) {
         XmlPullParserFactory factory;
         XmlPullParser parser;
         int currentLevel = 0;
@@ -71,7 +74,7 @@ public class XmlParser {
                     case XmlPullParser.END_TAG:
                         if (tagName.equalsIgnoreCase(KEY_REGIONS_LIST)) {
                             Collections.sort(root.getRegions());
-                            return root;
+                            return Single.just(root);
                         } else if (tagName.equalsIgnoreCase(KEY_REGION)) {
                             currentLevel = currentLevel - 1;
                             Collections.sort(parent.getRegions());
