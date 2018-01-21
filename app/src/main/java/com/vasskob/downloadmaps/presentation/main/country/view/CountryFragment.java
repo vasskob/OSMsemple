@@ -22,7 +22,7 @@ import com.arellomobile.mvp.presenter.PresenterType;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.vasskob.downloadmaps.R;
 import com.vasskob.downloadmaps.domain.model.Region;
-import com.vasskob.downloadmaps.presentation.main.OnRegionClickListener;
+import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.country.presenter.CountryPresenter;
 import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
 
@@ -45,7 +45,7 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
     private Unbinder mUnBinder;
     private RegionAdapter mAdapter;
     private List<Region> mRegionList;
-    private OnRegionClickListener mCallback;
+    private ActivityCallback mCallback;
 
     @BindView(R.id.fl_label)
     FrameLayout flRegionLabel;
@@ -77,7 +77,7 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
         @Override
         public void onRegionClick(int position) {
             Timber.d("onRegionClick: " + mRegionList.get(position));
-            mCallback.onCountryClick(mRegionList.get(position));
+            mCallback.onRegionClick(mRegionList.get(position));
         }
     };
 
@@ -95,7 +95,7 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
         try {
-            mCallback = (OnRegionClickListener) context;
+            mCallback = (ActivityCallback) context;
         } catch (ClassCastException classCastE) {
             throw new ClassCastException(context.toString() + " must implement OnContinentClickListener");
         }

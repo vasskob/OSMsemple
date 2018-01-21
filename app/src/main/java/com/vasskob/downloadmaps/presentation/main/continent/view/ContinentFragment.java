@@ -20,7 +20,7 @@ import com.arellomobile.mvp.presenter.PresenterType;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.vasskob.downloadmaps.R;
 import com.vasskob.downloadmaps.domain.model.Region;
-import com.vasskob.downloadmaps.presentation.main.OnRegionClickListener;
+import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.continent.presenter.ContinentPresenter;
 import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
 import com.vasskob.downloadmaps.utils.MemoryUtils;
@@ -44,7 +44,7 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
     private Unbinder mUnBinder;
     private RegionAdapter mAdapter;
     private List<Region> mRegionList;
-    private OnRegionClickListener mCallback;
+    private ActivityCallback mCallback;
 
     @BindView(R.id.pb_free_memory)
     ProgressBar pbFreeMemory;
@@ -70,7 +70,7 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
         @Override
         public void onRegionClick(int position) {
             Timber.d("onRegionClick: " + mRegionList.get(position));
-            mCallback.onContinentClick(mRegionList.get(position));
+            mCallback.onRegionClick(mRegionList.get(position));
         }
     };
 
@@ -86,7 +86,7 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
         try {
-            mCallback = (OnRegionClickListener) context;
+            mCallback = (ActivityCallback) context;
         } catch (ClassCastException classCastE) {
             throw new ClassCastException(context.toString() + " must implement OnContinentClickListener");
         }
