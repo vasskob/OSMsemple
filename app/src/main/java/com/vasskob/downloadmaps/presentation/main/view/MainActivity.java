@@ -18,7 +18,7 @@ import com.vasskob.downloadmaps.presentation.main.presenter.MainPresenter;
 import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
 import com.vasskob.downloadmaps.utils.MemoryUtils;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,6 +30,8 @@ import dagger.android.AndroidInjection;
 import timber.log.Timber;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
+
+    private static final String REGIONS_XML = "regions.xml";
 
     @BindView(R.id.pb_free_memory)
     ProgressBar pbFreeMemory;
@@ -68,7 +70,15 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         ButterKnife.bind(this);
         initContinentRView();
         mPresenter.getFreeMemory();
-        mPresenter.getContinents();
+        getContinents();
+    }
+
+    private void getContinents() {
+        try {
+            mPresenter.getContinents(getAssets().open(REGIONS_XML));
+        } catch (IOException e) {
+            Timber.e("onCreate: getContinents Error " + e.getMessage());
+        }
     }
 
     private void initContinentRView() {
@@ -90,18 +100,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void showRegions(List<Region> regionList) {
-        // TODO: 20.01.18 update with real data
-        mAdapter.updateRegions(getFakeRegions());
-    }
-
-    private List<Region> getFakeRegions() {
-        List<Region> regions = new ArrayList<>();
-        Region region = new Region("Africa");
-        Region region1 = new Region("America");
-        Region region2 = new Region("Antarctica");
-        regions.add(region);
-        regions.add(region1);
-        regions.add(region2);
-        return regions;
+        mAdapter.updateRegions(regionList);
     }
 }

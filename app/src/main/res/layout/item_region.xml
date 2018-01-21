@@ -2,9 +2,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_item_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/region_item_height"
-    android:id="@+id/rl_item_container"
     android:background="@color/colorItemBg">
 
     <ImageView
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
         android:src="@drawable/ic_world_globe_dark_gr"/>
 
     <TextView
@@ -21,11 +21,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
         android:layout_toEndOf="@+id/iv_globe"
+        android:gravity="center"
         android:textColor="@color/region_item_title_text_color"
         android:textSize="@dimen/region_item_title_text_size"
-        tools:text="Central America"/>
+        tools:text="Europe"/>
 
     <View
         android:layout_width="match_parent"

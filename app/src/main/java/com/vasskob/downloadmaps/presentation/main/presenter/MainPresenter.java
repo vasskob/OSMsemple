@@ -2,9 +2,13 @@ package com.vasskob.downloadmaps.presentation.main.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.vasskob.downloadmaps.domain.model.Region;
 import com.vasskob.downloadmaps.domain.repository.FileDownloadRepository;
 import com.vasskob.downloadmaps.presentation.main.view.MainView;
 import com.vasskob.downloadmaps.utils.MemoryUtils;
+import com.vasskob.downloadmaps.utils.XmlParser;
+
+import java.io.InputStream;
 
 @InjectViewState
 public class MainPresenter extends MvpPresenter<MainView> {
@@ -21,9 +25,12 @@ public class MainPresenter extends MvpPresenter<MainView> {
         getViewState().showFreeMemory(freeMemory, totalMemory);
     }
 
-    public void getContinents() {
-        // TODO: 20.01.18 implement parsing XML
-        getViewState().showRegions(null);
+    public void getContinents(InputStream inputStream) {
+        XmlParser parser = new XmlParser();
+        Region root = parser.parse(inputStream);
+        if (root.getRegions() != null) {
+            getViewState().showRegions(root.getRegions());
+        }
     }
 
     public void loadFile(String url) {
