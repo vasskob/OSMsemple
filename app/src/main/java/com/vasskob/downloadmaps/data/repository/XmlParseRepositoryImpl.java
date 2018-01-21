@@ -2,7 +2,6 @@ package com.vasskob.downloadmaps.data.repository;
 
 import com.vasskob.downloadmaps.domain.model.Region;
 import com.vasskob.downloadmaps.domain.repository.XmlParseRepository;
-import com.vasskob.downloadmaps.utils.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -57,7 +56,6 @@ public class XmlParseRepositoryImpl implements XmlParseRepository {
                         if (tagName.equalsIgnoreCase(KEY_REGIONS_LIST)) {
                             currentLevel = 0;
                         } else if (tagName.equalsIgnoreCase(KEY_REGION)) {
-
                             Region newRegion = new Region();
                             parent.addRegion(newRegion);
                             getAttributes(newRegion, parser);
@@ -100,7 +98,7 @@ public class XmlParseRepositoryImpl implements XmlParseRepository {
             String attributeValue = parser.getAttributeValue(i);
             switch (attributeName) {
                 case ATR_NAME:
-                    region.setName(StringUtils.getCapitalName(attributeValue));
+                    region.setName(attributeValue);
                     break;
                 case ATR_TYPE:
                     region.setType(attributeValue);

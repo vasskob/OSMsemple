@@ -12,6 +12,7 @@ import com.vasskob.downloadmaps.domain.model.Region;
 import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.continent.view.ContinentFragment;
 import com.vasskob.downloadmaps.presentation.main.country.view.CountryFragment;
+import com.vasskob.downloadmaps.utils.StringUtils;
 
 import javax.inject.Inject;
 
@@ -47,7 +48,7 @@ public class MainActivity extends MvpAppCompatActivity implements ActivityCallba
     public void onRegionClick(Region region) {
         Timber.d("onRegionClick: Region = " + region.getRegions());
         if (region.getRegions().size() == 0 || region.getRegions().isEmpty()) return;
-        initActionBar(region.getName(), true);
+        initActionBar(StringUtils.getCapitalName(region.getName()), true);
         replaceFragment(CountryFragment.newInstance(region.getRegions()), true);
     }
 
