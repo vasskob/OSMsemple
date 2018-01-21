@@ -49,5 +49,6 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionViewHolder> {
 
     public interface OnRegionClickListener {
         void onRegionClick(int position);
+        void onDownloadClick(int position);
     }
 }

@@ -3,6 +3,7 @@ package com.vasskob.downloadmaps.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,6 +198,14 @@ public class Region implements Comparable<Region>, Parcelable {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public boolean hasMap() {
+        return TextUtils.equals(map, "yes");
+    }
+
+    public boolean isContinent() {
+        return parent.getParent() == null;
     }
 
     public enum DownloadState {
