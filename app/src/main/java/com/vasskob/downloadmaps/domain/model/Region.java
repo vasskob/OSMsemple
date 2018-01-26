@@ -5,34 +5,26 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Region implements Comparable<Region>, Parcelable {
 
     private String name;
     private String type;
-    private String downloadSuffix;
-    private String innerDownloadSuffix;
-    private String downloadPrefix;
-    private String innerDownloadPrefix;
     private String map;
     private String srtm;
     private String hillshade;
-    private String wiki;
-    private String roads;
-    private String translate;
-    private String joinMapFiles;
-    private String boundary;
+    private String continentParent;
+    private String countryParent;
+    private String districtParent;
 
-    // tree info
-    private Region parent;
-    private List<Region> regions = new ArrayList<>(); // Child regions collection
+    public String getDistrictParent() {
+        return districtParent;
+    }
 
-    // download info
+    public void setDistrictParent(String districtParent) {
+        this.districtParent = districtParent;
+    }
+
     private volatile DownloadState downloadState = DownloadState.NOT_STARTED;
-    public int downloadProgress;
-    public int fileSize;
 
     public DownloadState getDownloadState() {
         return downloadState;
@@ -45,8 +37,14 @@ public class Region implements Comparable<Region>, Parcelable {
     public Region() {
     }
 
-    public Region(String name) {
+    public Region(String name, String type, String map, String srtm, String hillshade, String countryParent, String continentParent) {
         this.name = name;
+        this.type = type;
+        this.map = map;
+        this.srtm = srtm;
+        this.hillshade = hillshade;
+        this.countryParent = countryParent;
+        this.continentParent = continentParent;
     }
 
     public String getName() {
@@ -63,38 +61,6 @@ public class Region implements Comparable<Region>, Parcelable {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getDownloadSuffix() {
-        return downloadSuffix;
-    }
-
-    public void setDownloadSuffix(String downloadSuffix) {
-        this.downloadSuffix = downloadSuffix;
-    }
-
-    public String getInnerDownloadSuffix() {
-        return innerDownloadSuffix;
-    }
-
-    public void setInnerDownloadSuffix(String innerDownloadSuffix) {
-        this.innerDownloadSuffix = innerDownloadSuffix;
-    }
-
-    public String getDownloadPrefix() {
-        return downloadPrefix;
-    }
-
-    public void setDownloadPrefix(String downloadPrefix) {
-        this.downloadPrefix = downloadPrefix;
-    }
-
-    public String getInnerDownloadPrefix() {
-        return innerDownloadPrefix;
-    }
-
-    public void setInnerDownloadPrefix(String innerDownloadPrefix) {
-        this.innerDownloadPrefix = innerDownloadPrefix;
     }
 
     public String getMap() {
@@ -121,44 +87,20 @@ public class Region implements Comparable<Region>, Parcelable {
         this.hillshade = hillshade;
     }
 
-    public String getWiki() {
-        return wiki;
+    public String getCountryParent() {
+        return countryParent;
     }
 
-    public void setWiki(String wiki) {
-        this.wiki = wiki;
+    public void setCountryParent(String countryParent) {
+        this.countryParent = countryParent;
     }
 
-    public String getRoads() {
-        return roads;
+    public String getContinentParent() {
+        return continentParent;
     }
 
-    public void setRoads(String roads) {
-        this.roads = roads;
-    }
-
-    public String getTranslate() {
-        return translate;
-    }
-
-    public void setTranslate(String translate) {
-        this.translate = translate;
-    }
-
-    public String getJoinMapFiles() {
-        return joinMapFiles;
-    }
-
-    public void setJoinMapFiles(String joinMapFiles) {
-        this.joinMapFiles = joinMapFiles;
-    }
-
-    public String getBoundary() {
-        return boundary;
-    }
-
-    public void setBoundary(String boundary) {
-        this.boundary = boundary;
+    public void setContinentParent(String continentParent) {
+        this.continentParent = continentParent;
     }
 
     public void validate() {
@@ -182,56 +124,15 @@ public class Region implements Comparable<Region>, Parcelable {
                     break;
             }
         }
-        if (wiki == null) wiki = map;
-        if (roads == null) roads = map;
-    }
-
-    public void addRegion(Region region) {
-        regions.add(region);
-        region.parent = this;
-    }
-
-    public Region getParent() {
-        return parent;
-    }
-
-    public List<Region> getRegions() {
-        return regions;
     }
 
     @Override
-    public int compareTo(@NonNull Region region) {
+    public int compareTo(@NonNull Region country) {
         try {
-            return name.compareTo(region.name);
+            return name.compareTo(country.name);
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    public boolean hasMap() {
-        return TextUtils.equals(map, "yes");
-    }
-
-    public boolean isContinent() {
-        return parent.getParent() == null;
-    }
-
-    public enum DownloadState {
-        NOT_STARTED,
-        QUEUED,
-        DOWNLOADING,
-        COMPLETE
-    }
-
-    @Override
-    public String toString() {
-        return "Region{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", map='" + map + '\'' +
-                ", translate='" + translate + '\'' +
-                ", parent=" + parent +
-                '}';
     }
 
     @Override
@@ -243,50 +144,27 @@ public class Region implements Comparable<Region>, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
         dest.writeString(this.type);
-        dest.writeString(this.downloadSuffix);
-        dest.writeString(this.innerDownloadSuffix);
-        dest.writeString(this.downloadPrefix);
-        dest.writeString(this.innerDownloadPrefix);
         dest.writeString(this.map);
         dest.writeString(this.srtm);
         dest.writeString(this.hillshade);
-        dest.writeString(this.wiki);
-        dest.writeString(this.roads);
-        dest.writeString(this.translate);
-        dest.writeString(this.joinMapFiles);
-        dest.writeString(this.boundary);
-        dest.writeParcelable(this.parent, flags);
-        dest.writeList(this.regions);
+        dest.writeString(this.countryParent);
+        dest.writeString(this.continentParent);
         dest.writeInt(this.downloadState == null ? -1 : this.downloadState.ordinal());
-        dest.writeInt(this.downloadProgress);
-        dest.writeInt(this.fileSize);
     }
 
     protected Region(Parcel in) {
         this.name = in.readString();
         this.type = in.readString();
-        this.downloadSuffix = in.readString();
-        this.innerDownloadSuffix = in.readString();
-        this.downloadPrefix = in.readString();
-        this.innerDownloadPrefix = in.readString();
         this.map = in.readString();
         this.srtm = in.readString();
         this.hillshade = in.readString();
-        this.wiki = in.readString();
-        this.roads = in.readString();
-        this.translate = in.readString();
-        this.joinMapFiles = in.readString();
-        this.boundary = in.readString();
-        this.parent = in.readParcelable(Region.class.getClassLoader());
-        this.regions = new ArrayList<>();
-        in.readList(this.regions, Region.class.getClassLoader());
+        this.countryParent = in.readString();
+        this.continentParent = in.readString();
         int tmpDownloadState = in.readInt();
         this.downloadState = tmpDownloadState == -1 ? null : DownloadState.values()[tmpDownloadState];
-        this.downloadProgress = in.readInt();
-        this.fileSize = in.readInt();
     }
 
-    public static final Parcelable.Creator<Region> CREATOR = new Parcelable.Creator<Region>() {
+    public static final Creator<Region> CREATOR = new Creator<Region>() {
         @Override
         public Region createFromParcel(Parcel source) {
             return new Region(source);
@@ -297,4 +175,22 @@ public class Region implements Comparable<Region>, Parcelable {
             return new Region[size];
         }
     };
+
+    public boolean hasMap() {
+        return TextUtils.equals(map, "yes");
+    }
+
+    @Override
+    public String toString() {
+        return "Region {" +
+                "name='" + name + '\'' +
+//                ", type='" + type + '\'' +
+//                ", map='" + map + '\'' +
+//                ", srtm='" + srtm + '\'' +
+//                ", hillshade='" + hillshade + '\'' +
+                ", countryParent='" + countryParent + '\'' +
+                ", continentParent='" + continentParent + '\'' +
+//                ", downloadState=" + downloadState +
+                '}';
+    }
 }
