@@ -3,4 +3,6 @@
     <string name="label_title">World Regions</string>
     <string name="label_device_memory">Device memory</string>
     <string name="label_free_memory">Free &lt;b>%s&lt;/b></string>
+    <string name="loading_complete">File Download Complete</string>
+    <string name="file_loading_progress">Downloaded (%d/%d) MB</string>
 </resources>
