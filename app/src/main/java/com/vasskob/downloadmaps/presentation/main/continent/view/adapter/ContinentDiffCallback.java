@@ -1,16 +1,16 @@
-package com.vasskob.downloadmaps.presentation.main.view.adapter;
+package com.vasskob.downloadmaps.presentation.main.continent.view.adapter;
 
 import android.support.v7.util.DiffUtil;
 
-import com.vasskob.downloadmaps.domain.model.Region;
+import com.vasskob.downloadmaps.domain.model.Continent;
 
 import java.util.List;
 
-public class RegionDiffCallback extends DiffUtil.Callback {
+public class ContinentDiffCallback extends DiffUtil.Callback {
 
-    private List<Region> oldList, newList;
+    private List<Continent> oldList, newList;
 
-    RegionDiffCallback(List<Region> oldList, List<Region> newList) {
+    ContinentDiffCallback(List<Continent> oldList, List<Continent> newList) {
         this.oldList = oldList;
         this.newList = newList;
     }
@@ -33,8 +33,8 @@ public class RegionDiffCallback extends DiffUtil.Callback {
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         if (oldList.size() != 0 && newList.size() != 0) {
-            Region oldVisitor = oldList.get(oldItemPosition);
-            Region newVisitor = newList.get(newItemPosition);
+            Continent oldVisitor = oldList.get(oldItemPosition);
+            Continent newVisitor = newList.get(newItemPosition);
             return oldVisitor.equals(newVisitor);
         } else return oldList.size() == 0 && newList.size() == 0;
     }

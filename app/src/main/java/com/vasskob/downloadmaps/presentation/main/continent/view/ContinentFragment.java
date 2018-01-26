@@ -19,14 +19,15 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.PresenterType;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.vasskob.downloadmaps.R;
-import com.vasskob.downloadmaps.domain.model.Region;
+import com.vasskob.downloadmaps.domain.model.Continent;
+import com.vasskob.downloadmaps.domain.model.Country;
 import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.continent.presenter.ContinentPresenter;
-import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
+import com.vasskob.downloadmaps.presentation.main.continent.view.adapter.ContinentAdapter;
 import com.vasskob.downloadmaps.utils.MemoryUtils;
-import com.vasskob.downloadmaps.utils.StringUtils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,8 +44,8 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
     private static final String REGIONS_XML = "regions.xml";
 
     private Unbinder mUnBinder;
-    private RegionAdapter mAdapter;
-    private List<Region> mRegionList;
+    private ContinentAdapter mAdapter;
+    private List<Continent> mContinentList;
     private ActivityCallback mCallback;
 
     @BindView(R.id.pb_free_memory)
@@ -67,17 +68,18 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
         return mPresenterProvider.get();
     }
 
-    private RegionAdapter.OnRegionClickListener mListener = new RegionAdapter.OnRegionClickListener() {
-        @Override
-        public void onRegionClick(int position) {
-            Timber.d("onRegionClick: " + mRegionList.get(position));
-            mCallback.onRegionClick(mRegionList.get(position));
-        }
+    private ContinentAdapter.OnContinentClickListener mListener = new ContinentAdapter.OnContinentClickListener() {
+
+        private Continent continent;
+        private List<Country> countryList;
 
         @Override
-        public void onDownloadClick(int position) {
-            Timber.d("onDownloadClick: URL = "
-                    + StringUtils.getDownloadURL(mRegionList.get(position)));
+        public void onContinentClick(int position) {
+            continent = mContinentList.get(position);
+            Timber.d("onContinentClick: " + continent);
+            countryList = continent.getCountryList();
+            if (countryList.isEmpty() || countryList.size() == 0) return;
+            mCallback.onContinentClick(continent);
         }
     };
 
@@ -131,7 +133,7 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
     private void initContinentRView() {
         rvRegions.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvRegions.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new RegionAdapter(mListener);
+        mAdapter = new ContinentAdapter(mListener);
         rvRegions.setAdapter(mAdapter);
     }
 
@@ -146,10 +148,11 @@ public class ContinentFragment extends MvpAppCompatFragment implements Continent
     }
 
     @Override
-    public void showRegions(List<Region> regionList) {
-        Timber.d("showRegions: Regions = " + regionList);
-        mRegionList = regionList;
-        mAdapter.updateRegions(regionList);
+    public void showContinents(List<Continent> continents) {
+        Timber.d("showCountries: Regions = " + continents);
+        mContinentList = continents;
+        Collections.sort(continents);
+        mAdapter.updateContinents(continents);
     }
 
     @Override

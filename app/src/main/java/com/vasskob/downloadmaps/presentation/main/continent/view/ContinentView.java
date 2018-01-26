@@ -4,7 +4,7 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.vasskob.downloadmaps.domain.model.Region;
+import com.vasskob.downloadmaps.domain.model.Continent;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public interface ContinentView extends MvpView {
     void showFreeMemory(long freeMemory, long totalMemory);
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void showRegions(List<Region> regionList);
+    void showContinents(List<Continent> regionList);
 }
 
 
