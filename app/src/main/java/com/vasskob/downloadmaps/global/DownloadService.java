@@ -1,4 +1,4 @@
-package com.vasskob.downloadmaps.global.di;
+package com.vasskob.downloadmaps.global;
 
 import android.app.IntentService;
 import android.content.Intent;

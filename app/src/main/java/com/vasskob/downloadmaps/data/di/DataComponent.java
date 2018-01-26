@@ -4,7 +4,7 @@ import com.vasskob.downloadmaps.DownloadMapsApp;
 import com.vasskob.downloadmaps.domain.repository.FileDownloadRepository;
 import com.vasskob.downloadmaps.domain.repository.XmlParseRepository;
 import com.vasskob.downloadmaps.global.di.AppModule;
-import com.vasskob.downloadmaps.global.di.DownloadService;
+import com.vasskob.downloadmaps.global.DownloadService;
 
 import javax.inject.Singleton;
 

@@ -16,7 +16,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.vasskob.downloadmaps.R;
 import com.vasskob.downloadmaps.domain.model.Continent;
 import com.vasskob.downloadmaps.domain.model.Country;
-import com.vasskob.downloadmaps.global.di.DownloadService;
+import com.vasskob.downloadmaps.global.DownloadService;
 import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.continent.view.ContinentFragment;
 import com.vasskob.downloadmaps.presentation.main.country.view.CountryFragment;
@@ -30,8 +30,6 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import timber.log.Timber;
-
-import static com.vasskob.downloadmaps.global.di.DownloadService.FILE_URL;
 
 public class MainActivity extends MvpAppCompatActivity implements ActivityCallback, HasSupportFragmentInjector, MainView {
 
@@ -87,7 +85,7 @@ public class MainActivity extends MvpAppCompatActivity implements ActivityCallba
 
     private void startDownload() {
         Intent intent = new Intent(this, DownloadService.class);
-        intent.putExtra(FILE_URL, fileUrl);
+        intent.putExtra(DownloadService.FILE_URL, fileUrl);
         startService(intent);
     }
 
