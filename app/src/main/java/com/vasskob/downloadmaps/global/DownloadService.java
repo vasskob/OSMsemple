@@ -62,6 +62,9 @@ public class DownloadService extends IntentService {
 
     private void startDownload(ResponseBody body) throws IOException {
         Timber.d("startDownload: ");
+        if (body == null) {
+            return;
+        }
 
         int count;
         byte data[] = new byte[1024 * 4];
@@ -87,7 +90,7 @@ public class DownloadService extends IntentService {
 
             long currentTime = System.currentTimeMillis() - startTime;
 
-            if (currentTime > 1000 * timeCount) {
+            if (currentTime > 100 * timeCount) {
                 mDownloadResult.setCurrentFileSize((int) current);
                 mDownloadResult.setProgress(progress);
                 sendBroadcast(mDownloadResult);
