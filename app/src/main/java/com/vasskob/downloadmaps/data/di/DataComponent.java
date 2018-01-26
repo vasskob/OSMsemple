@@ -4,6 +4,7 @@ import com.vasskob.downloadmaps.DownloadMapsApp;
 import com.vasskob.downloadmaps.domain.repository.FileDownloadRepository;
 import com.vasskob.downloadmaps.domain.repository.XmlParseRepository;
 import com.vasskob.downloadmaps.global.di.AppModule;
+import com.vasskob.downloadmaps.global.di.DownloadService;
 
 import javax.inject.Singleton;
 
@@ -28,7 +29,10 @@ public interface DataComponent {
         DataComponent build();
     }
 
+    void inject(DownloadService downloadService);
+
     FileDownloadRepository getFileDownloadRepository();
 
     XmlParseRepository getXmlParseRepository();
+
 }

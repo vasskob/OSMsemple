@@ -19,12 +19,15 @@ public class DownloadMapsApp extends Application implements HasActivityInjector 
 
     @Inject
     DispatchingAndroidInjector<Activity> activityInjector;
+    private DataComponent mDataComponent;
+    private static DownloadMapsApp mApplication;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initTimber();
         initDagger();
+        mApplication = this;
     }
 
     private void initTimber() {
@@ -34,7 +37,7 @@ public class DownloadMapsApp extends Application implements HasActivityInjector 
     }
 
     private void initDagger() {
-        DataComponent mDataComponent = DaggerDataComponent.builder()
+        mDataComponent = DaggerDataComponent.builder()
                 .application(this)
                 .build();
 
@@ -43,6 +46,14 @@ public class DownloadMapsApp extends Application implements HasActivityInjector 
                 .build();
 
         mAppComponent.inject(this);
+    }
+
+    public static DownloadMapsApp getInstance() {
+        return mApplication;
+    }
+
+    public DataComponent getDataComponent() {
+        return mDataComponent;
     }
 
     @Override
