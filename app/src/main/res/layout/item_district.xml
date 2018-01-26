@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/region_item_height"
+    android:background="@color/colorItemBg">
+
+    <ImageView
+        android:id="@+id/iv_globe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/default_margin"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_world_globe_dark_gr"/>
+
+    <TextView
+        android:id="@+id/tv_region_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_toEndOf="@+id/iv_globe"
+        android:layout_toStartOf="@+id/iv_download"
+        android:gravity="start"
+        android:textColor="@color/region_item_title_text_color"
+        android:textSize="@dimen/region_item_title_text_size"
+        tools:text="Europe"/>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_region_name"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_toEndOf="@+id/iv_globe"
+        android:layout_toStartOf="@+id/iv_download"
+        android:scaleY="1"
+        android:secondaryProgress="100"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/iv_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/default_margin"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_download_selector"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/region_item_divider_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_toEndOf="@+id/iv_globe"
+        android:background="@color/colorItemDivider"/>
+
+</RelativeLayout>
