@@ -1,13 +1,18 @@
 package com.vasskob.downloadmaps.presentation.main.country.view;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +26,18 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.PresenterType;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.vasskob.downloadmaps.R;
-import com.vasskob.downloadmaps.domain.model.Region;
+import com.vasskob.downloadmaps.domain.model.Country;
+import com.vasskob.downloadmaps.domain.model.District;
+import com.vasskob.downloadmaps.domain.model.Download;
 import com.vasskob.downloadmaps.presentation.main.ActivityCallback;
 import com.vasskob.downloadmaps.presentation.main.country.presenter.CountryPresenter;
-import com.vasskob.downloadmaps.presentation.main.view.adapter.RegionAdapter;
+import com.vasskob.downloadmaps.presentation.main.country.view.adapter.CountryAdapter;
 import com.vasskob.downloadmaps.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,14 +48,18 @@ import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 import timber.log.Timber;
 
+import static com.vasskob.downloadmaps.domain.model.Download.DOWNLOAD_EXTRA;
+import static com.vasskob.downloadmaps.presentation.main.view.MainActivity.MESSAGE_PROGRESS;
+
 public class CountryFragment extends MvpAppCompatFragment implements CountryView {
 
     public static final String REGION_KEY = "REGION_KEY";
 
     private Unbinder mUnBinder;
-    private RegionAdapter mAdapter;
-    private List<Region> mRegionList;
+    private CountryAdapter mAdapter;
+    private List<Country> mCountryList;
     private ActivityCallback mCallback;
+    private LocalBroadcastManager bManager;
 
     @BindView(R.id.fl_label)
     FrameLayout flRegionLabel;
@@ -56,6 +69,9 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
 
     @BindView(R.id.pb_free_memory)
     ProgressBar pbFreeMemory;
+
+    @BindView(R.id.tv_memory_label)
+    TextView tvLoadingProgress;
 
     @BindView(R.id.tv_memory_size)
     TextView tvMemorySize;
@@ -74,26 +90,52 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
         return mPresenterProvider.get();
     }
 
-    private RegionAdapter.OnRegionClickListener mListener = new RegionAdapter.OnRegionClickListener() {
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
         @Override
-        public void onRegionClick(int position) {
-            Timber.d("onRegionClick: " + mRegionList.get(position));
-            mCallback.onRegionClick(mRegionList.get(position));
+        public void onReceive(Context context, Intent intent) {
+            if (TextUtils.equals(intent.getAction(), MESSAGE_PROGRESS)) {
+                Download download = intent.getParcelableExtra(DOWNLOAD_EXTRA);
+                pbFreeMemory.setProgress(download.getProgress());
+                if (download.getProgress() == 100) {
+                    tvLoadingProgress.setText(getString(R.string.loading_complete));
+                } else {
+                    tvLoadingProgress.setText(String.format(Locale.US, getString(R.string.file_loading_progress), download.getCurrentFileSize(), download.getTotalFileSize()));
+                }
+            }
+        }
+    };
+
+    private CountryAdapter.OnCountryClickListener mListener = new CountryAdapter.OnCountryClickListener() {
+
+        private String downloadURL;
+
+        @Override
+        public void onCountryClick(int position) {
+            Country country = mCountryList.get(position);
+            Timber.d("onCountryClick: " + country);
+            List<District> districts = country.getDistrictList();
+            if (districts.isEmpty() || districts.size() == 0) return;
+            mCallback.onCountryClick(country);
         }
 
         @Override
         public void onDownloadClick(int position) {
-            Timber.d("onDownloadClick: URL = "
-                    + StringUtils.getDownloadURL(mRegionList.get(position)));
+            Country country = mCountryList.get(position);
+            downloadURL = StringUtils.getDownloadURL(country.getName() + "_" + country.getContinentParent());
+            Timber.d("onDownloadClick: URL downloadFile = "
+                    + downloadURL);
             rlProgressContainer.setVisibility(View.VISIBLE);
             pbFreeMemory.setVisibility(View.VISIBLE);
+            //   mPresenter.loadFile(downloadURL, "MyFile_");
+            mCallback.onRegionDownload(downloadURL);
         }
     };
 
-    public static Fragment newInstance(List<Region> regions) {
-        Timber.d("newInstance: Regions!!! = " + regions);
+    public static Fragment newInstance(List<Country> countries) {
+        Timber.d("newInstance: Regions!!! = " + countries);
         Bundle args = new Bundle();
-        args.putParcelableArrayList(REGION_KEY, (ArrayList<? extends Parcelable>) regions);
+        args.putParcelableArrayList(REGION_KEY, (ArrayList<? extends Parcelable>) countries);
         CountryFragment fragment = new CountryFragment();
         fragment.setArguments(args);
         return fragment;
@@ -119,8 +161,8 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRegionList = getArguments().getParcelableArrayList(REGION_KEY);
-        Timber.d("onCreate: Regions!!! = " + mRegionList);
+        mCountryList = getArguments().getParcelableArrayList(REGION_KEY);
+        Timber.d("onCreate: Regions!!! = " + mCountryList);
     }
 
     @Override
@@ -140,26 +182,48 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
     private void initContinentRView() {
         rvRegions.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvRegions.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new RegionAdapter(mListener);
+        mAdapter = new CountryAdapter(mListener);
         rvRegions.setAdapter(mAdapter);
-        showRegions(mRegionList);
+        showCountries(mCountryList);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Timber.d("onResume: ");
+        registerReceiver();
+    }
+
+    private void registerReceiver() {
+        bManager = LocalBroadcastManager.getInstance(getActivity());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MESSAGE_PROGRESS);
+        bManager.registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Timber.d("onPause: ");
+        bManager.unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void showLoadingDialog() {
-        // TODO: 21.01.18 implement
+        // TODO: 26.01.18 implement
     }
 
     @Override
     public void showLoadingProgress() {
         rlProgressContainer.setVisibility(View.VISIBLE);
-        // TODO: 21.01.18 implement
+        // TODO: 26.01.18 implement
     }
 
     @Override
-    public void showRegions(List<Region> regionList) {
+    public void showCountries(List<Country> countries) {
         pbFreeMemory.setVisibility(View.GONE);
-        mAdapter.updateRegions(regionList);
+        Collections.sort(countries);
+        mAdapter.updateCountries(countries);
     }
 
     @Override
@@ -173,5 +237,4 @@ public class CountryFragment extends MvpAppCompatFragment implements CountryView
         super.onDestroy();
         mListener = null;
     }
-
 }

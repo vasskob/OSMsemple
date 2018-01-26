@@ -3,7 +3,7 @@ package com.vasskob.downloadmaps.presentation.main.country.view;
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.vasskob.downloadmaps.domain.model.Region;
+import com.vasskob.downloadmaps.domain.model.Country;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public interface CountryView extends MvpView {
     void showLoadingDialog();
     void showLoadingProgress();
-    void showRegions(List<Region> regionList);
+    void showCountries(List<Country> countries);
 }
 
 
